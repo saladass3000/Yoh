@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: pexels-photo-326311
-  m_Shader: {fileID: 4800000, guid: 917b37092bae034459c28c00a3a19b54, type: 3}
+  m_Shader: {fileID: 4800000, guid: daa8ffe459c56284d93591fc821e33de, type: 3}
   m_ShaderKeywords: VIGNETTE_MASKED _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -53,6 +53,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _BackFaceTexture:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BaseMap:
+        m_Texture: {fileID: 2800000, guid: 69d16d292facfbc429244881ae4996b6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BlueTexture:
@@ -263,6 +267,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _OutlineZOffsetMaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _PanoCubeMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -405,6 +413,7 @@ Material:
     - _2ndShadeMapMask_Inverse: 0
     - _2nd_ShadeMapUV: 0
     - _AOStrength: 1
+    - _AdditionalLightIgnoreCelShade: 0.9
     - _AlphaMod: 0
     - _AlphaPremultiply: 0
     - _AlphaToMask: 0
@@ -447,6 +456,8 @@ Material:
     - _BumpScale: 1
     - _CameraAngleMax: 90
     - _CameraAngleMin: 45
+    - _CelShadeMidPoint: -0.5
+    - _CelShadeSoftness: 0.05
     - _Clearcoat: 1
     - _ClearcoatAnisotropy: 0
     - _ClearcoatEnableReflections: 1
@@ -517,6 +528,7 @@ Material:
     - _DetailNormalMapUV: 0
     - _DetailTexIntensity: 1
     - _DetailTexUV: 0
+    - _DirectLightMultiplier: 1
     - _DisableDirectionalInAdd: 1
     - _DissolveAlpha: 0
     - _DissolveAlpha0: 0
@@ -577,6 +589,7 @@ Material:
     - _EmissionMapUV: 0
     - _EmissionMask1UV: 0
     - _EmissionMaskUV: 0
+    - _EmissionMulByBaseColor: 0
     - _EmissionReplace: 0
     - _EmissionScrollingOffset: 0
     - _EmissionScrollingOffset1: 0
@@ -679,8 +692,10 @@ Material:
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _IgnoreFog: 0
+    - _IndirectLightMultiplier: 1
     - _Inverse_Clipping: 0
     - _InvertSmoothness: 0
+    - _IsFace: 0
     - _LightingAOTexUV: 0
     - _LightingAdditiveDetailStrength: 1
     - _LightingAdditiveGradientEnd: 0.5
@@ -725,6 +740,7 @@ Material:
     - _MainHueShiftReplace: 1
     - _MainHueShiftSpeed: 0
     - _MainHueShiftToggle: 0
+    - _MainLightIgnoreCelShade: 0
     - _MainMinAlpha: 0
     - _MainMipScale: 0.25
     - _MainShadowClipMod: 0
@@ -767,6 +783,8 @@ Material:
     - _Mode: 0
     - _ModelAngleMax: 90
     - _ModelAngleMin: 45
+    - _OcclusionRemapEnd: 1
+    - _OcclusionRemapStart: 0
     - _OcclusionStrength: 1
     - _OffsetFactor: 0
     - _OffsetUnits: 0
@@ -790,6 +808,10 @@ Material:
     - _OutlineTextureUV: 0
     - _OutlineTintMix: 0
     - _OutlineUseVertexColors: 0
+    - _OutlineWidth: 1
+    - _OutlineZOffset: 0.0001
+    - _OutlineZOffsetMaskRemapEnd: 1
+    - _OutlineZOffsetMaskRemapStart: 0
     - _PanoBlend: 0
     - _PanoCubeMapToggle: 0
     - _PanoEmission: 0
@@ -821,6 +843,8 @@ Material:
     - _RGBNormalBlend: 0
     - _RGBRed_UV: 0
     - _RGBUseVertexColors: 0
+    - _ReceiveShadowMappingAmount: 0.65
+    - _ReceiveShadowMappingPosOffset: 0
     - _RgbNormalBScale: 0
     - _RgbNormalBUV: 0
     - _RgbNormalGScale: 0
@@ -935,6 +959,9 @@ Material:
     - _TextTimeRotation: 0
     - _TextTimeUV: 0
     - _UVSec: 0
+    - _UseAlphaClipping: 0
+    - _UseEmission: 0
+    - _UseOcclusion: 0
     - _Use_1stAs2nd: 0
     - _Use_1stShadeMapAlpha_As_ShadowMask: 0
     - _Use_2ndShadeMapAlpha_As_ShadowMask: 0
@@ -1053,7 +1080,7 @@ Material:
     - m_end_vertexManipulation: 0
     - m_end_voronoiRandom: 0
     - m_lightingOptions: 0
-    - m_mainOptions: 0
+    - m_mainOptions: 1
     - m_outlineOptions: 0
     - m_renderingOptions: 0
     - m_start_Alpha: 0
@@ -1166,6 +1193,7 @@ Material:
     - _BRDFSpecularMapPan: {r: 0, g: 0, b: 0, a: 0}
     - _BackFaceColor: {r: 1, g: 1, b: 1, a: 1}
     - _BackFacePanning: {r: 0, g: 0, b: 0, a: 0}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BlueColor: {r: 1, g: 1, b: 1, a: 1}
     - _BumpMapPan: {r: 0, g: 0, b: 0, a: 0}
     - _ClearcoatMapPan: {r: 0, g: 0, b: 0, a: 0}
@@ -1206,6 +1234,7 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionColor1: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionMap1Pan: {r: 0, g: 0, b: 0, a: 0}
+    - _EmissionMapChannelMask: {r: 1, g: 1, b: 1, a: 0}
     - _EmissionMapPan: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionMask1Pan: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionMaskPan: {r: 0, g: 0, b: 0, a: 0}
@@ -1225,6 +1254,7 @@ Material:
     - _GlitterPan: {r: 0, g: 0, b: 0, a: 0}
     - _GlitterTexturePan: {r: 0, g: 0, b: 0, a: 0}
     - _GreenColor: {r: 1, g: 1, b: 1, a: 1}
+    - _IndirectLightMinColor: {r: 0.1, g: 0.1, b: 0.1, a: 1}
     - _LightingAOTexPan: {r: 0, g: 0, b: 0, a: 0}
     - _LightingDetailShadowsPan: {r: 0, g: 0, b: 0, a: 0}
     - _LightingShadowColor: {r: 1, g: 1, b: 1, a: 1}
@@ -1242,6 +1272,8 @@ Material:
     - _MetallicMaskPan: {r: 0, g: 0, b: 0, a: 0}
     - _MetallicTintMapPan: {r: 0, g: 0, b: 0, a: 0}
     - _MirrorTexturePan: {r: 0, g: 0, b: 0, a: 0}
+    - _OcclusionMapChannelMask: {r: 1, g: 0, b: 0, a: 0}
+    - _OutlineColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _OutlineDropShadowOffset: {r: 1, g: 0, b: 0, a: 0}
     - _OutlineFadeDistance: {r: 0, g: 0, b: 0, a: 0}
     - _OutlineMaskPan: {r: 0, g: 0, b: 0, a: 0}
@@ -1272,6 +1304,7 @@ Material:
     - _RimWidthNoiseTexturePan: {r: 0, g: 0, b: 0, a: 0}
     - _SSSColor: {r: 1, g: 0, b: 0, a: 1}
     - _SSSThicknessMapPan: {r: 0, g: 0, b: 0, a: 0}
+    - _ShadowMapColor: {r: 1, g: 0.825, b: 0.78, a: 1}
     - _SmoothnessMaskPan: {r: 0, g: 0, b: 0, a: 0}
     - _SpecularAnisoJitterMacro1Pan: {r: 0, g: 0, b: 0, a: 0}
     - _SpecularAnisoJitterMacroPan: {r: 0, g: 0, b: 0, a: 0}

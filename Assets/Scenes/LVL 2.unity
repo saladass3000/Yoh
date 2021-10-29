@@ -51,7 +51,7 @@ LightmapSettings:
     m_IndirectOutputScale: 1
     m_AlbedoBoost: 1
     m_EnvironmentLightingMode: 0
-    m_EnableBakedLightmaps: 1
+    m_EnableBakedLightmaps: 0
     m_EnableRealtimeLightmaps: 0
   m_LightmapEditorSettings:
     serializedVersion: 12
@@ -97,7 +97,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: baa60f1720b2b9f4fabd835dcc185d23,
+    type: 2}
   m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
@@ -29384,7 +29385,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: a008df85459c2e842b1013436c0e084f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -21.38
+      value: -13
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a008df85459c2e842b1013436c0e084f,
         type: 3}
@@ -29457,6 +29458,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: ed739c312ed3ec74c99b6ecb214a9d48, type: 2}
     - target: {fileID: 8510132731797305157, guid: a008df85459c2e842b1013436c0e084f,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ed739c312ed3ec74c99b6ecb214a9d48, type: 2}
+    - target: {fileID: 8743813690021804245, guid: a008df85459c2e842b1013436c0e084f,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 

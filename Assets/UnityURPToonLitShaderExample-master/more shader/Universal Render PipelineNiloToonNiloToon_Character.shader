@@ -1,0 +1,330 @@
+Shader "Universal Render Pipeline/NiloToon/NiloToon_Character" {
+	Properties {
+		[Header(Base Color)] _BaseMap ("_BaseMap (Albedo) (Default White)", 2D) = "white" {}
+		[HDR] _BaseColor ("_BaseColor (Default White) (Can control alpha)", Vector) = (1,1,1,1)
+		[Header(Polygon Face Culling)] [Enum(UnityEngine.Rendering.CullMode)] _Cull ("_Cull (Default Back) (If not using Back, maybe you should disable Outline)", Float) = 2
+		[Header(Blending State)] [Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("_SrcBlend (Use One for opaque)/(Use SrcAlpha for transparent).  (Default One)", Float) = 1
+		[Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("_DstBlend (Use Zero for opaque)/(Use OneMinusSrcAlpha for transparent).  (Default Zero)", Float) = 0
+		[Header(ZWrite)] [ToggleUI] _ZWrite ("_ZWrite (Should turn off if rendering semi-transparent) (Default On) ", Float) = 1
+		[Header(ZTest)] [Enum(UnityEngine.Rendering.CompareFunction)] [HideInInspector] _ZTest ("_ZTest (Default LEqual)", Float) = 4
+		[Header(ColorMask)] [Enum(RGBA,15,RGB,14)] _ColorMask ("_ColorMask (Set to RGB if you don't want to pollute RenderTexture's alpha channel) (Default RGBA)", Float) = 15
+		[Header(Stencil)] [HideInInspector] _StencilRef ("_StencilRef (Default 0)", Range(0, 255)) = 0
+		[Enum(UnityEngine.Rendering.CompareFunction)] [HideInInspector] _StencilComp ("_StencilComp (Default Disabled)", Float) = 0
+		[Main(_IsSkinGroup,_)] _IsSkin ("Is Skin?                                                                (Default Off)", Float) = 0
+		[Title(_IsSkinGroup, #######################################################################)] [Title(_IsSkinGroup, You can turn on this group for skin materials)] [Title(_IsSkinGroup, so skin area can use a better set of lighting settings automatically)] [Title(_IsSkinGroup, #######################################################################)] [Title(_IsSkinGroup, If the model combined skin and other parts into 1 material)] [Title(_IsSkinGroup, You can enable an Optional Skin Mask Texture to affect valid skin area only)] [Title(_IsSkinGroup, #######################################################################)] [Title(_IsSkinGroup, )] [Title(_IsSkinGroup, Optional Skin Mask Texture)] [SubToggle(_IsSkinGroup,_SKIN_MASK_ON)] _UseSkinMaskMap ("_UseSkinMaskMap (allow defining each fragment is skin or not) (Default Off)", Float) = 0
+		[Tex(_IsSkinGroup)] [NoScaleOffset] _SkinMaskMap ("_SkinMaskMap (Use 1 channel) (White = is skin, Black = not skin) (Default White)", 2D) = "white" {}
+		[RGBAChannelMaskToVec4(_IsSkinGroup)] _SkinMaskMapChannelMask ("_SkinMaskMapChannelMask (Default G)", Vector) = (0,1,0,0)
+		[Main(_IsFaceGroup,_ISFACE)] _IsFace ("Is Face?                                                               (Default Off)", Float) = 0
+		[Title(_IsFaceGroup, #######################################################################)] [Title(_IsFaceGroup, You can turn on this group for face materials)] [Title(_IsFaceGroup, so face area can use a better set of lighting and outline settings automatically)] [Title(_IsFaceGroup, #######################################################################)] [Title(_IsFaceGroup, If the model combined face and other parts into 1 material)] [Title(_IsFaceGroup, You can enable an Optional Face Mask Texture to affect valid face area only)] [Title(_IsFaceGroup, #######################################################################)] [Title(_IsFaceGroup, )] [Title(_IsFaceGroup, Optional Face Mask Texture)] [SubToggle(_IsFaceGroup,_FACE_MASK_ON)] _UseFaceMaskMap ("_UseFaceMaskMap (allow defining each vertex is face or not) (Default Off)", Float) = 0
+		[Tex(_IsFaceGroup)] [NoScaleOffset] _FaceMaskMap ("_FaceMaskMap (Use 1 channel) (White = is face, Black = not face) (Default White)", 2D) = "white" {}
+		[RGBAChannelMaskToVec4(_IsFaceGroup)] _FaceMaskMapChannelMask ("_FaceMaskMapChannelMask (Default G)", Vector) = (0,1,0,0)
+		[Main(_ZOffsetGroup,_)] _ZOffsetEnable ("ZOffset                                                                (Default On)", Float) = 1
+		[Title(_ZOffsetGroup, #######################################################################)] [Title(_ZOffsetGroup, Offset vertex Clip space depth value in terms of world space unit)] [Title(_ZOffsetGroup, Useful for rendering eyebrow on top of hair or rendering transparent expression over cheek)] [Title(_ZOffsetGroup, #######################################################################)] [Title(_ZOffsetGroup, You can enable an Optional ZOffset Mask Texture to select which vertices to apply ZOffset)] [Title(_ZOffsetGroup, #######################################################################)] [Title(_ZOffsetGroup, )] [Sub(_ZOffsetGroup)] _ZOffset ("_ZOffset (Default 0)", Range(-1, 1)) = 0
+		[Title(_ZOffsetGroup, Optional ZOffset Mask Texture)] [SubToggle(_ZOffsetGroup,_ZOFFSETMAP)] _UseZOffsetMaskTex ("_UseZOffsetMaskTex (Default Off)", Float) = 0
+		[Tex(_ZOffsetGroup)] [NoScaleOffset] _ZOffsetMaskTex ("_ZOffsetMaskTex (Use 1 channel) (White = apply ZOffset, Black is ignore ZOffset) (Default White)", 2D) = "white" {}
+		[RGBAChannelMaskToVec4(_ZOffsetGroup)] _ZOffsetMaskMapChannelMask ("_ZOffsetMaskMapChannelMask (Default G)", Vector) = (0,1,0,0)
+		[Main(_AlphaOverrideGroup, _ALPHAOVERRIDEMAP)] _UseAlphaOverrideTex ("Alpha Override                                               (Default Off)", Float) = 0
+		[Title(_AlphaOverrideGroup, #######################################################################)] [Title(_AlphaOverrideGroup, Replace _BaseMap alpha channel by the following texture)] [Title(_AlphaOverrideGroup, #######################################################################)] [Title(_AlphaOverrideGroup, )] [Tex(_AlphaOverrideGroup)] [NoScaleOffset] _AlphaOverrideTex ("_AlphaOverrideTex (Use 1 channel) (Default White)", 2D) = "white" {}
+		[RGBAChannelMaskToVec4(_AlphaOverrideGroup)] _AlphaOverrideTexChannelMask ("_AlphaOverrideTexChannelMask (Default G)", Vector) = (0,1,0,0)
+		[Main(_AlphaClippingGroup,_ALPHATEST_ON)] _AlphaClip ("Alpha Clipping                                                (Default Off)", Float) = 0
+		[Title(_AlphaClippingGroup, #######################################################################)] [Title(_AlphaClippingGroup, Clip Discard a pixel if pixel alpha value if lower than Cutoff)] [Title(_AlphaClippingGroup, #######################################################################)] [Title(_AlphaClippingGroup, )] [Sub(_AlphaClippingGroup)] _Cutoff ("_Cutoff (Default 0.5)", Range(0, 1)) = 0.5
+		[Main(_FinalOutputAlphaGroup,_)] _EditFinalOutputAlphaEnable ("Edit Final Output Alpha                             (Default On)", Float) = 1
+		[Title(_FinalOutputAlphaGroup, #######################################################################)] [Title(_FinalOutputAlphaGroup, When rendering to RenderTexture you can force alpha write to that RenderTexture equals 1)] [Title(_FinalOutputAlphaGroup, Useful if you need to use result RenderTexture alpha channel as transparent texture alpha or mask)] [Title(_FinalOutputAlphaGroup, #######################################################################)] [Title(_FinalOutputAlphaGroup, )] [SubToggle(_FinalOutputAlphaGroup, _)] _ForceFinalOutputAlphaEqualsOne ("_ForceFinalOutputAlphaEqualsOne(usually turn On for opaque if needed) (Default Off)", Float) = 0
+		[Main(_BaseMapStackingLayer1Group, _BASEMAP_STACKING_LAYER1)] _BaseMapStackingLayer1Enable ("BaseMap Stacking Layer 1                      (Default Off)", Float) = 0
+		[Title(_BaseMapStackingLayer1Group, #######################################################################)] [Title(_BaseMapStackingLayer1Group, Just like adding a Photoshop Normal blending layer on top of BaseMap)] [Title(_BaseMapStackingLayer1Group, Useful if you need to add makeup on face or decal or logo or tattoo or anim effect etc)] [Title(_BaseMapStackingLayer1Group, #######################################################################)] [Title(_BaseMapStackingLayer1Group, )] [Tex(_BaseMapStackingLayer1Group)] [NoScaleOffset] _BaseMapStackingLayer1Tex ("_BaseMapStackingLayer1Tex (Default White)", 2D) = "white" {}
+		[Sub(_BaseMapStackingLayer1Group)] [HDR] _BaseMapStackingLayer1TintColor ("_BaseMapStackingLayer1TintColor (Default White)", Vector) = (1,1,1,1)
+		[Sub(_BaseMapStackingLayer1Group)] _BaseMapStackingLayer1TexUVScaleOffset ("_BaseMapStackingLayer1TexUVScaleOffset (Default (1,1,0,0))", Vector) = (1,1,0,0)
+		[Sub(_BaseMapStackingLayer1Group)] _BaseMapStackingLayer1TexUVAnimSpeed ("_BaseMapStackingLayer1TexUVAnimSpeed (Default (0,0)) (use xy only)", Vector) = (0,0,0,0)
+		[Title(_BaseMapStackingLayer1Group, Optional Mask texture)] [Tex(_BaseMapStackingLayer1Group)] [NoScaleOffset] _BaseMapStackingLayer1MaskTex ("_BaseMapStackingLayer1MaskTex (Default White)", 2D) = "white" {}
+		[RGBAChannelMaskToVec4(_BaseMapStackingLayer1Group)] _BaseMapStackingLayer1MaskTexChannel ("_BaseMapStackingLayer1MaskTexChannel (Default G)", Vector) = (0,1,0,0)
+		[Main(_BaseMapStackingLayer2Group, _BASEMAP_STACKING_LAYER2)] _BaseMapStackingLayer2Enable ("BaseMap Stacking Layer 2                     (Default Off)", Float) = 0
+		[Title(_BaseMapStackingLayer2Group, #######################################################################)] [Title(_BaseMapStackingLayer2Group, Just like adding a Photoshop Normal blending layer on top of BaseMap)] [Title(_BaseMapStackingLayer2Group, Useful if you need to add makeup on face or decal or logo or tattoo etc)] [Title(_BaseMapStackingLayer2Group, #######################################################################)] [Title(_BaseMapStackingLayer2Group, )] [Tex(_BaseMapStackingLayer2Group)] [NoScaleOffset] _BaseMapStackingLayer2Tex ("_BaseMapStackingLayer2Tex (Default White)", 2D) = "white" {}
+		[Sub(_BaseMapStackingLayer2Group)] [HDR] _BaseMapStackingLayer2TintColor ("_BaseMapStackingLayer2TintColor (Default White)", Vector) = (1,1,1,1)
+		[Main(_BaseMapStackingLayer3Group, _BASEMAP_STACKING_LAYER3)] _BaseMapStackingLayer3Enable ("BaseMap Stacking Layer 3                     (Default Off)", Float) = 0
+		[Title(_BaseMapStackingLayer3Group, #######################################################################)] [Title(_BaseMapStackingLayer3Group, Just like adding a Photoshop Normal blending layer on top of BaseMap)] [Title(_BaseMapStackingLayer3Group, Useful if you need to add makeup on face or decal or logo or tattoo etc)] [Title(_BaseMapStackingLayer3Group, #######################################################################)] [Title(_BaseMapStackingLayer3Group, )] [Tex(_BaseMapStackingLayer3Group)] [NoScaleOffset] _BaseMapStackingLayer3Tex ("_BaseMapStackingLayer3Tex (Default White)", 2D) = "white" {}
+		[Sub(_BaseMapStackingLayer3Group)] [HDR] _BaseMapStackingLayer3TintColor ("_BaseMapStackingLayer3TintColor (Default White)", Vector) = (1,1,1,1)
+		[Main(_BaseMapStackingLayer4Group, _BASEMAP_STACKING_LAYER4)] _BaseMapStackingLayer4Enable ("BaseMap Stacking Layer 4                     (Default Off)", Float) = 0
+		[Title(_BaseMapStackingLayer4Group, #######################################################################)] [Title(_BaseMapStackingLayer4Group, Just like adding a Photoshop Normal blending layer on top of BaseMap)] [Title(_BaseMapStackingLayer4Group, Useful if you need to add makeup on face or decal or logo or tattoo etc)] [Title(_BaseMapStackingLayer4Group, #######################################################################)] [Title(_BaseMapStackingLayer4Group, )] [Tex(_BaseMapStackingLayer4Group)] [NoScaleOffset] _BaseMapStackingLayer4Tex ("_BaseMapStackingLayer4Tex (Default White)", 2D) = "white" {}
+		[Sub(_BaseMapStackingLayer4Group)] [HDR] _BaseMapStackingLayer4TintColor ("_BaseMapStackingLayer4TintColor (Default White)", Vector) = (1,1,1,1)
+		[Main(_BaseMapStackingLayer5Group, _BASEMAP_STACKING_LAYER5)] _BaseMapStackingLayer5Enable ("BaseMap Stacking Layer 5                     (Default Off)", Float) = 0
+		[Title(_BaseMapStackingLayer5Group, #######################################################################)] [Title(_BaseMapStackingLayer5Group, Just like adding a Photoshop Normal blending layer on top of BaseMap)] [Title(_BaseMapStackingLayer5Group, Useful if you need to add makeup on face or decal or logo or tattoo etc)] [Title(_BaseMapStackingLayer5Group, #######################################################################)] [Title(_BaseMapStackingLayer5Group, )] [Tex(_BaseMapStackingLayer5Group)] [NoScaleOffset] _BaseMapStackingLayer5Tex ("_BaseMapStackingLayer5Tex (Default White)", 2D) = "white" {}
+		[Sub(_BaseMapStackingLayer5Group)] [HDR] _BaseMapStackingLayer5TintColor ("_BaseMapStackingLayer5TintColor (Default White)", Vector) = (1,1,1,1)
+		[Main(_BaseMapStackingLayer6Group, _BASEMAP_STACKING_LAYER6)] _BaseMapStackingLayer6Enable ("BaseMap Stacking Layer 6                     (Default Off)", Float) = 0
+		[Title(_BaseMapStackingLayer6Group, #######################################################################)] [Title(_BaseMapStackingLayer6Group, Just like adding a Photoshop Normal blending layer on top of BaseMap)] [Title(_BaseMapStackingLayer6Group, Useful if you need to add makeup on face or decal or logo or tattoo etc)] [Title(_BaseMapStackingLayer6Group, #######################################################################)] [Title(_BaseMapStackingLayer6Group, )] [Tex(_BaseMapStackingLayer6Group)] [NoScaleOffset] _BaseMapStackingLayer6Tex ("_BaseMapStackingLayer6Tex (Default White)", 2D) = "white" {}
+		[Sub(_BaseMapStackingLayer6Group)] [HDR] _BaseMapStackingLayer6TintColor ("_BaseMapStackingLayer6TintColor (Default White)", Vector) = (1,1,1,1)
+		[Main(_NormalMapGroup,_NORMALMAP)] _UseNormalMap ("Normal Map                                                      (Default Off)", Float) = 0
+		[Title(_NormalMapGroup, #######################################################################)] [Title(_NormalMapGroup, Tangent space normal map same as URP Lit shader)] [Title(_NormalMapGroup, #######################################################################)] [Title(_NormalMapGroup, )] [Tex(_NormalMapGroup)] [NoScaleOffset] [Normal] _BumpMap ("_BumpMap (a.k.a NormalMap)", 2D) = "bump" {}
+		[Sub(_NormalMapGroup)] _BumpScale ("_BumpScale (Default 1)", Float) = 1
+		[Main(_SmoothnessGroup,_,2)] _SmoothnessGroup ("Smoothness", Float) = 0
+		[Title(_SmoothnessGroup, #######################################################################)] [Title(_SmoothnessGroup, Similar to URP Lit shader Smoothness which affects Reflection or Highlights sharpness of)] [Title(_SmoothnessGroup, GGX Specular and Environment Reflections)] [Title(_SmoothnessGroup, #######################################################################)] [Title(_SmoothnessGroup, Smoothness equals One minus Roughness)] [Title(_SmoothnessGroup, #######################################################################)] [Title(_SmoothnessGroup, )] [Sub(_SmoothnessGroup)] _Smoothness ("_Smoothness (Default 0.5)", Range(0, 1)) = 0.5
+		[Title(_SmoothnessGroup, Optional Smoothness Texture)] [SubToggle(_SmoothnessGroup,_SMOOTHNESSMAP)] _UseSmoothnessMap ("_UseSmoothnessMap (Default Off)", Float) = 0
+		[Tex(_SmoothnessGroup)] [NoScaleOffset] _SmoothnessMap ("_SmoothnessMap (Use 1 channel only)(White = smooth, Black = rough)(Default White)", 2D) = "white" {}
+		[SubToggle(_SmoothnessGroup,_)] _SmoothnessMapInputIsRoughnessMap ("_SmoothnessMapInputIsRoughnessMap (One minus _SmoothnessMap data?)", Float) = 0
+		[RGBAChannelMaskToVec4(_SmoothnessGroup)] _SmoothnessMapChannelMask ("_SmoothnessMapChannelMask (Default A, same as URP Lit.shader's convention)", Vector) = (0,0,0,1)
+		[MinMaxSlider(_SmoothnessGroup,_SmoothnessMapRemapStart,_SmoothnessMapRemapEnd)] _SmoothnessMapRemapMinMaxSlider ("Range remap (Default 0~1)", Range(0, 1)) = 1
+		[HideInInspector] _SmoothnessMapRemapStart ("_SmoothnessMapRemapStart", Range(0, 1)) = 0
+		[HideInInspector] _SmoothnessMapRemapEnd ("_SmoothnessMapRemapEnd", Range(0, 1)) = 1
+		[Main(_EnvironmentReflectionGroup,_ENVIRONMENTREFLECTIONS)] _ReceiveEnvironmentReflection ("Environment Reflections                         (Default Off) (Experimental)", Float) = 0
+		[Title(_EnvironmentReflectionGroup, #######################################################################)] [Title(_EnvironmentReflectionGroup, Display scene Reflection Probe result)] [Title(_EnvironmentReflectionGroup, If the reflection is black you can try rebake reflection probe in scene)] [Title(_EnvironmentReflectionGroup, #######################################################################)] [Title(_EnvironmentReflectionGroup, )] [Title(_EnvironmentReflectionGroup,Apply Intensity)] [Sub(_EnvironmentReflectionGroup)] _EnvironmentReflectionUsage ("_EnvironmentReflectionUsage (Default 1)", Range(0, 1)) = 1
+		[Title(_EnvironmentReflectionGroup,Color and Brightness)] [Sub(_EnvironmentReflectionGroup)] _EnvironmentReflectionBrightness ("_EnvironmentReflectionBrightness (Default 1)", Range(0, 32)) = 1
+		[Sub(_EnvironmentReflectionGroup)] [HDR] _EnvironmentReflectionColor ("_EnvironmentReflectionColor (Default White)", Vector) = (1,1,1,1)
+		[Title(_EnvironmentReflectionGroup,Style)] [Sub(_EnvironmentReflectionGroup)] _EnvironmentReflectionSmoothnessMultiplier ("_EnvironmentReflectionSmoothnessMultiplier (Default 1)", Range(0, 4)) = 1
+		[Sub(_EnvironmentReflectionGroup)] _EnvironmentReflectionFresnelEffect ("_EnvironmentReflectionFresnelEffect (Default 0.5)", Range(0, 1)) = 0.5
+		[Title(_EnvironmentReflectionGroup, Optional Environment Reflections Mask Texture)] [Tex(_EnvironmentReflectionGroup)] [NoScaleOffset] _EnvironmentReflectionMaskMap ("_EnvironmentReflectionMaskMap (white is show, black is hide) (Default White)", 2D) = "white" {}
+		[RGBAChannelMaskToVec4(_EnvironmentReflectionGroup)] _EnvironmentReflectionMaskMapChannelMask ("_EnvironmentReflectionMaskMapChannelMask (Default G)", Vector) = (0,1,0,0)
+		[MinMaxSlider(_EnvironmentReflectionGroup,_EnvironmentReflectionMaskMapRemapStart,_EnvironmentReflectionMaskMapRemapEnd)] _EnvironmentReflectionMaskMapRemapMinMaxSlider ("Range remap (Default 0~1)", Range(0, 1)) = 1
+		[HideInInspector] _EnvironmentReflectionMaskMapRemapStart ("_EnvironmentReflectionMaskMapRemapStart", Range(0, 1)) = 0
+		[HideInInspector] _EnvironmentReflectionMaskMapRemapEnd ("_EnvironmentReflectionMaskMapRemapEnd", Range(0, 1)) = 1
+		[Main(_MatCapAlphaBlendGroup,_MATCAP_BLEND)] _UseMatCapAlphaBlend ("Mat Cap (alpha blend)                               (Default Off)", Float) = 0
+		[Title(_MatCapAlphaBlendGroup, #######################################################################)] [Title(_MatCapAlphaBlendGroup, Useful for changing material visual to any target matcap texture)] [Title(_MatCapAlphaBlendGroup, #######################################################################)] [Title(_MatCapAlphaBlendGroup, )] [Tex(_MatCapAlphaBlendGroup)] [NoScaleOffset] _MatCapAlphaBlendMap ("_MatCapAlphaBlendMap (Default White)", 2D) = "white" {}
+		[Sub(_MatCapAlphaBlendGroup)] _MatCapAlphaBlendUsage ("_MatCapAlphaBlendUsage (Default 1)", Range(0, 1)) = 1
+		[Sub(_MatCapAlphaBlendGroup)] _MatCapAlphaBlendTintColor ("_MatCapAlphaBlendTintColor (Can edit alpha) (Default White)", Vector) = (1,1,1,1)
+		[Sub(_MatCapAlphaBlendGroup)] _MatCapAlphaBlendMapAlphaAsMask ("_MatCapAlphaBlendMapAlphaAsMask (Default 0)", Range(0, 1)) = 0
+		[Sub(_MatCapAlphaBlendGroup)] _MatCapAlphaBlendUvScale ("_MatCapAlphaBlendUvScale", Range(0, 8)) = 1
+		[Title(_MatCapAlphaBlendGroup, Optional MatCap(alpha blend) Mask Texture)] [Tex(_MatCapAlphaBlendGroup)] [NoScaleOffset] _MatCapAlphaBlendMaskMap ("_MatCapAlphaBlendMaskMap (white is show, black is hide) (Default White)", 2D) = "white" {}
+		[RGBAChannelMaskToVec4(_MatCapAlphaBlendGroup)] _MatCapAlphaBlendMaskMapChannelMask ("_MatCapAlphaBlendMaskMapChannelMask (Default G)", Vector) = (0,1,0,0)
+		[MinMaxSlider(_MatCapAlphaBlendGroup,_MatCapAlphaBlendMaskMapRemapStart,_MatCapAlphaBlendMaskMapRemapEnd)] _MatCapAlphaBlendMaskMapRemapMinMaxSlider ("Range remap (Default 0~1)", Range(0, 1)) = 1
+		[HideInInspector] _MatCapAlphaBlendMaskMapRemapStart ("_MatCapAlphaBlendMaskMapRemapStart", Range(0, 1)) = 0
+		[HideInInspector] _MatCapAlphaBlendMaskMapRemapEnd ("_MatCapAlphaBlendMaskMapRemapEnd", Range(0, 1)) = 1
+		[Main(_MatCapAdditiveGroup,_MATCAP_ADD)] _UseMatCapAdditive ("Mat Cap (additive)                                       (Default Off)", Float) = 0
+		[Title(_MatCapAdditiveGroup, #######################################################################)] [Title(_MatCapAdditiveGroup, Useful for adding matcap rim light or matcap specular highlight)] [Title(_MatCapAdditiveGroup, #######################################################################)] [Title(_MatCapAdditiveGroup, )] [Tex(_MatCapAdditiveGroup)] [NoScaleOffset] _MatCapAdditiveMap ("_MatCapAdditiveMap (Default White)", 2D) = "white" {}
+		[Sub(_MatCapAdditiveGroup)] _MatCapAdditiveIntensity ("_MatCapAdditiveIntensity (Default 1)", Range(0, 100)) = 1
+		[Sub(_MatCapAdditiveGroup)] [HDR] _MatCapAdditiveColor ("_MatCapAdditiveColor (Default White)", Vector) = (1,1,1,1)
+		[Sub(_MatCapAdditiveGroup)] _MatCapAdditiveMapAlphaAsMask ("_MatCapAdditiveMapAlphaAsMask (Default 0)", Range(0, 1)) = 0
+		[Sub(_MatCapAdditiveGroup)] _MatCapAdditiveUvScale ("_MatCapAdditiveUvScale", Range(0, 8)) = 1
+		[Title(_MatCapAdditiveGroup, Optional MatCap(additive) Mask Texture)] [Tex(_MatCapAdditiveGroup)] [NoScaleOffset] _MatCapAdditiveMaskMap ("_MatCapAdditiveMaskMap (white is show, black is hide) (Default White)", 2D) = "white" {}
+		[RGBAChannelMaskToVec4(_MatCapAdditiveGroup)] _MatCapAdditiveMaskMapChannelMask ("_MatCapAdditiveMaskMapChannelMask (Default G)", Vector) = (0,1,0,0)
+		[MinMaxSlider(_MatCapAdditiveGroup,_MatCapAdditiveMaskMapRemapStart,_MatCapAdditiveMaskMapRemapEnd)] _MatCapAdditiveMaskMapRemapMinMaxSlider ("Range remap (Default 0~1)", Range(0, 1)) = 1
+		[HideInInspector] _MatCapAdditiveMaskMapRemapStart ("_MatCapAdditiveMaskMapRemapStart", Range(0, 1)) = 0
+		[HideInInspector] _MatCapAdditiveMaskMapRemapEnd ("_MatCapAdditiveMaskMapRemapEnd", Range(0, 1)) = 1
+		[Main(_DynamicEyeGroup,_DYNAMIC_EYE)] _EnableDynamicEyeFeature ("Dynamic Eye                                                    (Default Off)", Float) = 0
+		[Title(_DynamicEyeGroup, #######################################################################)] [Title(_DynamicEyeGroup, Useful if material is realistic sphere eye balls)] [Title(_DynamicEyeGroup, You can ignore this section if this material is not realistic sphere eye balls)] [Title(_DynamicEyeGroup, #######################################################################)] [Title(_DynamicEyeGroup, )] [Title(_DynamicEyeGroup, Overall)] [Sub(_DynamicEyeGroup)] _DynamicEyeSize ("_DynamicEyeSize (Default 2.2)", Range(0.1, 8)) = 2.2
+		[Sub(_DynamicEyeGroup)] _DynamicEyeFinalBrightness ("_DynamicEyeFinalBrightness (Default 2)", Range(0, 8)) = 2
+		[Sub(_DynamicEyeGroup)] _DynamicEyeFinalTintColor ("_DynamicEyeFinalTintColor (Default white)", Vector) = (1,1,1,1)
+		[Title(_DynamicEyeGroup, Eye pupil)] [Tex(_DynamicEyeGroup)] _DynamicEyePupilMap ("_DynamicEyePupilMap (Default white)", 2D) = "white" {}
+		[Tex(_DynamicEyeGroup)] _DynamicEyePupilMaskTex ("_DynamicEyePupilMaskTex (Default white)", 2D) = "white" {}
+		[RGBAChannelMaskToVec4(_DynamicEyeGroup)] _DynamicEyePupilMaskTexChannelMask ("_DynamicEyePupilMaskTexChannelMask (Default A)", Vector) = (0,0,0,1)
+		[Sub(_DynamicEyeGroup)] _DynamicEyePupilColor ("_DynamicEyePupilColor (Default white)", Vector) = (1,1,1,1)
+		[Sub(_DynamicEyeGroup)] _DynamicEyePupilDepthScale ("_DynamicEyePupilDepthScale (Default 0.4)", Range(0, 1)) = 0.4
+		[Sub(_DynamicEyeGroup)] _DynamicEyePupilSize ("_DynamicEyePupilSize (Default -0.384)", Range(-1, 1)) = -0.384
+		[Sub(_DynamicEyeGroup)] _DynamicEyePupilMaskSoftness ("_DynamicEyePupilMaskSoftness (Default 0.216)", Range(0, 1)) = 0.216
+		[Title(_DynamicEyeGroup, Eye white)] [Tex(_DynamicEyeGroup)] _DynamicEyeWhiteMap ("_DynamicEyeWhiteMap (Default white)", 2D) = "white" {}
+		[Main(_OcclusionMapGroup,_OCCLUSIONMAP)] _UseOcclusion ("Occlusion Map                                               (Default Off)", Float) = 0
+		[Title(_OcclusionMapGroup, #######################################################################)] [Title(_OcclusionMapGroup, Force area defined by a texture becomes always in shadow)] [Title(_OcclusionMapGroup, #######################################################################)] [Title(_OcclusionMapGroup, )] [Title(_OcclusionMapGroup,Define)] [Tex(_OcclusionMapGroup)] [NoScaleOffset] _OcclusionMap ("_OcclusionMap (Use 1 channel) (White = no effect, Black = 100% occlusion) (Default White)", 2D) = "white" {}
+		[RGBAChannelMaskToVec4(_OcclusionMapGroup)] _OcclusionMapChannelMask ("_OcclusionMapChannelMask (Default G)", Vector) = (0,1,0,0)
+		[MinMaxSlider(_OcclusionMapGroup,_OcclusionRemapStart,_OcclusionRemapEnd)] _OcclusionRemapMinMaxSlider ("Range remap (Default 0~1)", Range(0, 1)) = 1
+		[HideInInspector] _OcclusionRemapStart ("_OcclusionRemapStart", Range(0, 1)) = 0
+		[HideInInspector] _OcclusionRemapEnd ("_OcclusionRemapEnd", Range(0, 1)) = 1
+		[Title(_OcclusionMapGroup,Usage)] [Sub(_OcclusionMapGroup)] _OcclusionStrength ("_OcclusionStrength (Default 1)", Range(0, 1)) = 1
+		[Sub(_OcclusionMapGroup)] _OcclusionStrengthIndirectMultiplier ("_OcclusionStrengthIndirectMultiplier (Default 0.5)", Range(0, 1)) = 0.5
+		[Main(_FaceShadowGradientMapGroup,_FACE_SHADOW_GRADIENTMAP)] _UseFaceShadowGradientMap ("Face Shadow Gradient Map                   (Default Off) (Experimental)", Float) = 0
+		[Title(_FaceShadowGradientMapGroup, #######################################################################)] [Title(_FaceShadowGradientMapGroup, Only effective if IsFace inside this material is on)] [Title(_FaceShadowGradientMapGroup, Only correct if character script FaceForwardDirection and FaceUpDirection is correctly set up)] [Title(_FaceShadowGradientMapGroup, User can provide a gradient texture to define artist controlled shadow result of 0 to 90 degree light rotation)] [Title(_FaceShadowGradientMapGroup, #######################################################################)] [Title(_FaceShadowGradientMapGroup, )] [Tex(_FaceShadowGradientMapGroup)] [NoScaleOffset] _FaceShadowGradientMap ("_FaceShadowGradientMap (Use 1 channel) (White = light from front, Black = light from right) (Default gray)", 2D) = "gray" {}
+		[Sub(_FaceShadowGradientMapGroup)] _FaceShadowGradientOffset ("_FaceShadowGradientOffset (Default 0)", Range(-1, 1)) = 0
+		[Sub(_FaceShadowGradientMapGroup)] _FaceShadowGradientMapUVScaleOffset ("_FaceShadowGradientMapUVScaleOffset (Default {1,1,0,0})", Vector) = (1,1,0,0)
+		[Title(_FaceShadowGradientMapGroup, Debug)] [SubToggle(_FaceShadowGradientMapGroup, _)] _DebugFaceShadowGradientMap ("_DebugFaceShadowGradientMap (Default Off)", Float) = 0
+		[Main(_SPECULARHIGHLIGHTS,_SPECULARHIGHLIGHTS)] _UseSpecular ("Specular Highlights                                     (Default Off)", Float) = 0
+		[Title(_SPECULARHIGHLIGHTS, #######################################################################)] [Title(_SPECULARHIGHLIGHTS, Add PBR or NPR direct specular highlights to result)] [Title(_SPECULARHIGHLIGHTS, Please use the Smoothness section above to control roughness)] [Title(_SPECULARHIGHLIGHTS, Enable specularReactToLightDirectionChange in NiloToonCharRenderingControlVolume will make specular react to light direction change)] [Title(_SPECULARHIGHLIGHTS, #######################################################################)] [Title(_SPECULARHIGHLIGHTS, )] [Title(_SPECULARHIGHLIGHTS,Define Specular Area)] [Tex(_SPECULARHIGHLIGHTS)] [NoScaleOffset] _SpecularMap ("_SpecularMap (Use 1 channel) (White = full specular, Black = no specular) (Default White)", 2D) = "white" {}
+		[RGBAChannelMaskToVec4(_SPECULARHIGHLIGHTS)] _SpecularMapChannelMask ("_SpecularMapChannelMask (Default B)", Vector) = (0,0,1,0)
+		[MinMaxSlider(_SPECULARHIGHLIGHTS,_SpecularMapRemapStart,_SpecularMapRemapEnd)] _SpecularMapRemapMinMaxSlider ("Range remap (Default 0~1)", Range(0, 1)) = 1
+		[HideInInspector] _SpecularMapRemapStart ("_SpecularMapRemapStart", Range(0, 1)) = 0
+		[HideInInspector] _SpecularMapRemapEnd ("_SpecularMapRemapEnd", Range(0, 1)) = 1
+		[Title(_SPECULARHIGHLIGHTS,Define Specular Method)] [SubToggle(_SPECULARHIGHLIGHTS, _)] _UseGGXDirectSpecular ("_UseGGXDirectSpecular (usually turn Off for hair highlight) (turn On for PBR/realistic specular) (Default On)", Float) = 1
+		[Title(_SPECULARHIGHLIGHTS, Define smoothness for GGX specular)] [Sub(_SPECULARHIGHLIGHTS)] _GGXDirectSpecularSmoothnessMultiplier ("_GGXDirectSpecularSmoothnessMultiplier (Default 1)", Range(0, 4)) = 1
+		[Title(_SPECULARHIGHLIGHTS,Intensity and Color)] [Sub(_SPECULARHIGHLIGHTS)] _SpecularIntensity ("_SpecularIntensity (Default 1)", Range(0, 100)) = 1
+		[Sub(_SPECULARHIGHLIGHTS)] [HDR] _SpecularColor ("_SpecularColor (Default White)", Vector) = (1,1,1,1)
+		[Sub(_SPECULARHIGHLIGHTS)] _MultiplyBaseColorToSpecularColor ("_MultiplyBaseColorToSpecularColor (Default 0)", Range(0, 1)) = 0
+		[Title(_SPECULARHIGHLIGHTS,Style)] [Sub(_SPECULARHIGHLIGHTS)] _SpecularAreaRemapUsage ("_SpecularAreaRemapUsage (Default 0)", Range(0, 1)) = 0
+		[Sub(_SPECULARHIGHLIGHTS)] _SpecularAreaRemapMidPoint ("_SpecularAreaRemapMidPoint (Default 0.1)", Range(0, 1)) = 0.1
+		[Sub(_SPECULARHIGHLIGHTS)] _SpecularAreaRemapRange ("_SpecularAreaRemapRange (a.k.a softness) (Default 0.05)", Range(0, 1)) = 0.05
+		[Title(_SPECULARHIGHLIGHTS,Optional Extra Tint by Texture)] [SubToggle(_SPECULARHIGHLIGHTS,_SPECULARHIGHLIGHTS_TEX_TINT)] _UseSpecularColorTintMap ("_UseSpecularColorTintMap (Default Off)", Float) = 0
+		[Tex(_SPECULARHIGHLIGHTS)] [NoScaleOffset] _SpecularColorTintMap ("_SpecularColorTintMap (Default White)", 2D) = "white" {}
+		[Sub(_SPECULARHIGHLIGHTS)] _SpecularColorTintMapUsage ("_SpecularColorTintMapUsage (Default 1)", Range(0, 1)) = 1
+		[Main(_KAJIYAKAY_SPECULAR,_KAJIYAKAY_SPECULAR)] _UseKajiyaKaySpecular ("KajiyaKaySpecular                                       (Default Off) (Experimental)", Float) = 0
+		[Title(_KAJIYAKAY_SPECULAR, #######################################################################)] [Title(_KAJIYAKAY_SPECULAR, Useful if you want dynamic hair reflection)] [Title(_KAJIYAKAY_SPECULAR, require each hair UV all rotated to the same direction)] [Title(_KAJIYAKAY_SPECULAR, #######################################################################)] [Title(_KAJIYAKAY_SPECULAR, )] [Sub(_KAJIYAKAY_SPECULAR)] [HDR] _HairStrandSpecularMainColor ("_HairStrandSpecularColor (Default White)", Vector) = (1,1,1,1)
+		[Sub(_KAJIYAKAY_SPECULAR)] [HDR] _HairStrandSpecularSecondColor ("_HairStrandSpecularSecondColor (Default White)", Vector) = (1,1,1,1)
+		[Sub(_KAJIYAKAY_SPECULAR)] _HairStrandSpecularMainExponent ("_HairStrandSpecularMainExponent (Default 256)", Float) = 256
+		[Sub(_KAJIYAKAY_SPECULAR)] _HairStrandSpecularSecondExponent ("_HairStrandSpecularMainExponent (Default 128)", Float) = 128
+		[Main(_EMISSION,_EMISSION)] _UseEmission ("Emission                                                            (Default Off)", Float) = 0
+		[Title(_EMISSION, #######################################################################)] [Title(_EMISSION, Add self Illumination or glow)] [Title(_EMISSION, Especially useful if URP bloom or NiloToonBloom postprocess is active in volume)] [Title(_EMISSION, #######################################################################)] [Title(_EMISSION, Besides regular emission use case)] [Title(_EMISSION, You can also enable it for eye highlight and let bloom postprocess do the diffusion filter similar to jp anime)] [Title(_EMISSION, #######################################################################)] [Title(_EMISSION, )] [Title(_EMISSION, Define Emission)] [Tex(_EMISSION)] [NoScaleOffset] _EmissionMap ("_EmissionMap (Default White)", 2D) = "white" {}
+		[Sub(_EMISSION)] _EmissionMapTilingXyOffsetZw ("_EmissionMapTilingXyOffsetZw (Default 1,1,0,0)", Vector) = (1,1,0,0)
+		[Title(_EMISSION, Define EmissionMap channel)] [SubToggle(_EMISSION, _)] _EmissionMapUseSingleChannelOnly ("_EmissionMapUseSingleChannelOnly (Default Off)", Float) = 0
+		[RGBAChannelMaskToVec4(_EMISSION)] _EmissionMapSingleChannelMask ("_EmissionMapSingleChannelMask (Default G)", Vector) = (0,1,0,0)
+		[Title(_EMISSION, Intensity and Color)] [Sub(_EMISSION)] _EmissionIntensity ("_EmissionIntensity (Default 1)", Range(0, 100)) = 1
+		[Sub(_EMISSION)] [HDR] _EmissionColor ("_EmissionColor (Default Black)", Vector) = (0,0,0,1)
+		[Sub(_EMISSION)] _MultiplyBaseColorToEmissionColor ("_MultiplyBaseColorToEmissionColor (Default 0)", Range(0, 1)) = 0
+		[Main(_DETAIL,_DETAIL)] _UseDetailMap ("Detail Maps                                                       (Default Off)", Float) = 0
+		[Title(_DETAIL, #######################################################################)] [Title(_DETAIL, Mix another base color texture and normal texture into result)] [Title(_DETAIL, #######################################################################)] [Title(_DETAIL, )] [Title(_DETAIL, Define Detail UV)] [SubToggle(_DETAIL, _)] _DetailUseSecondUv ("_DetailUseSecondUv (a.k.a uv2 in mesh) (Default Off)", Float) = 0
+		[Title(_DETAIL, Define Apply Area)] [Tex(_DETAIL)] [NoScaleOffset] _DetailMask ("_DetailMask (White = apply, Black = no effect) (Default White)", 2D) = "white" {}
+		[RGBAChannelMaskToVec4(_DETAIL)] _DetailMaskChannelMask ("_DetailMaskChannelMask (Default R)", Vector) = (1,0,0,0)
+		[Title(_DETAIL, Detail Albedo Map)] [Tex(_DETAIL)] [NoScaleOffset] _DetailAlbedoMap ("_DetailAlbedoMap (only use rgb channel) (Default linearGrey 0.5)", 2D) = "linearGrey" {}
+		[Sub(_DETAIL)] _DetailAlbedoWhitePoint ("_DetailAlbedoWhitePoint (Default 0.5)", Range(0.01, 1)) = 0.5
+		[Sub(_DETAIL)] _DetailAlbedoMapScale ("_DetailAlbedoMapScale (Default 1)", Range(0, 20)) = 1
+		[Title(_DETAIL, Detail Normal Map)] [Tex(_DETAIL)] [NoScaleOffset] [Normal] _DetailNormalMap ("_DetailNormalMap", 2D) = "bump" {}
+		[Sub(_DETAIL)] _DetailNormalMapScale ("_DetailNormalMapScale (Default 1)", Range(0, 20)) = 1
+		[Title(_DETAIL, Detail Maps Shared Tiling and Offset)] [Sub(_DETAIL)] _DetailMapsScaleTiling ("Detail Maps UV Tiling(xy) and Offset(zw), (Default 1,1,0,0)", Vector) = (1,1,0,0)
+		[Main(_LightingStyleGroup,_,2)] _LightingStyleGroup ("Lighting Style", Float) = 0
+		[Title(_LightingStyleGroup,Direct Light)] [Sub(_LightingStyleGroup)] _CelShadeMidPoint ("_CelShadeMidPoint (Default 0)", Range(-1, 1)) = 0
+		[Sub(_LightingStyleGroup)] _CelShadeSoftness ("_CelShadeSoftness (Default 0.05)", Range(0.001, 1)) = 0.05
+		[Sub(_LightingStyleGroup)] _MainLightIgnoreCelShade ("_MainLightIgnoreCelShade (fake SSS) (Default 0)", Range(0, 1)) = 0
+		[Title(_LightingStyleGroup,Indirect Light)] [Sub(_LightingStyleGroup)] _IndirectLightFlatten ("_IndirectLightFlatten (Default 1)", Range(0, 1)) = 1
+		[Title(_LightingStyleGroup, #######################################################################)] [Title(_LightingStyleGroup, Section below will only apply if IsFace is on)] [Title(_LightingStyleGroup, #######################################################################)] [Title(_LightingStyleGroup, )] [Title(_LightingStyleGroup, Override for IsFace area only)] [SubToggle(_LightingStyleGroup,_)] _OverrideCelShadeParamForFaceArea ("_OverrideCelShadeParamForFaceArea (on/off this section completely) (Default On)", Float) = 1
+		[Sub(_LightingStyleGroup)] _CelShadeMidPointForFaceArea ("_CelShadeMidPointForFaceArea (Default -0.3)", Range(-1, 1)) = -0.3
+		[Sub(_LightingStyleGroup)] _CelShadeSoftnessForFaceArea ("_CelShadeSoftnessForFaceArea (Default 0.15)", Range(0, 1)) = 0.15
+		[Sub(_LightingStyleGroup)] _MainLightIgnoreCelShadeForFaceArea ("_MainLightIgnoreCelShadeForFaceArea (fake SSS) (Default 0.5)", Range(0, 1)) = 0.5
+		[Main(_SelfShadowGroup,_,2)] _SelfShadowGroup ("Calculate Shadow Color from Base Color", Float) = 0
+		[Title(_SelfShadowGroup, Shadow Color Style)] [Sub(_SelfShadowGroup)] _SelfShadowAreaHueOffset ("_SelfShadowAreaHueOffset (Default 0)", Range(-1, 1)) = 0
+		[Sub(_SelfShadowGroup)] _SelfShadowAreaSaturationBoost ("_SelfShadowAreaSaturationBoost (Default 0.5)", Range(0, 1)) = 0.5
+		[Sub(_SelfShadowGroup)] _SelfShadowAreaValueMul ("_SelfShadowAreaValueMul (Default 0.7)", Range(0, 1)) = 0.7
+		[Sub(_SelfShadowGroup)] [HDR] _SelfShadowTintColor ("_SelfShadowTintColor (Default White)", Vector) = (1,1,1,1)
+		[Title(_SelfShadowGroup, Lit To Shadow Transition Area Define)] [Sub(_SelfShadowGroup)] _LitToShadowTransitionAreaIntensity ("_LitToShadowTransitionAreaIntensity", Range(0, 32)) = 1
+		[Title(_SelfShadowGroup, Lit To Shadow Transition Area Color Style)] [Sub(_SelfShadowGroup)] _LitToShadowTransitionAreaHueOffset ("_LitToShadowTransitionAreaHueOffset (Default 0.01)", Range(-1, 1)) = 0.01
+		[Sub(_SelfShadowGroup)] _LitToShadowTransitionAreaSaturationBoost ("_LitToShadowTransitionAreaSaturationBoost (Default 0.5)", Range(0, 1)) = 0.5
+		[Sub(_SelfShadowGroup)] _LitToShadowTransitionAreaValueMul ("_LitToShadowTransitionAreaValueMul (Default 1)", Range(0, 1)) = 1
+		[Sub(_SelfShadowGroup)] [HDR] _LitToShadowTransitionAreaTintColor ("_LitToShadowTransitionAreaTintColor (Default White)", Vector) = (1,1,1,1)
+		[Title(_SelfShadowGroup, Safeguard Fallback Color)] [Sub(_SelfShadowGroup)] [HDR] _LowSaturationFallbackColor ("_LowSaturationFallbackColor (Default H:222,S:25,V:50) (Default alpha as intensity = 100)", Vector) = (0.3764706,0.4141177,0.5019608,1)
+		[Title(_SelfShadowGroup, #######################################################################)] [Title(_SelfShadowGroup, If you enabled IsSkin toggle)] [Title(_SelfShadowGroup, you can optionally override skin shadow color to this color)] [Sub(_SelfShadowGroup)] _OverrideBySkinShadowTintColor ("_OverrideBySkinShadowTintColor (Default 1)", Range(0, 1)) = 1
+		[Sub(_SelfShadowGroup)] _SkinShadowTintColor ("_SkinShadowTintColor (Default 1,0.8,0.8)", Vector) = (1,0.8,0.8,1)
+		[Title(_SelfShadowGroup, If you enabled IsFace toggle)] [Title(_SelfShadowGroup, you can optionally override face shadow color to this color)] [Sub(_SelfShadowGroup)] _OverrideByFaceShadowTintColor ("_OverrideByFaceShadowTintColor (Default 1)", Range(0, 1)) = 1
+		[Sub(_SelfShadowGroup)] _FaceShadowTintColor ("_FaceShadowTintColor (Default 1,0.9,0.9)", Vector) = (1,0.9,0.9,1)
+		[Main(_OverrideShadowColorByTextureGroup,_OVERRIDE_SHADOWCOLOR_BY_TEXTURE)] _UseOverrideShadowColorByTexture ("Override Shadow Color by Texture   (Default Off)", Float) = 0
+		[Title(_OverrideShadowColorByTextureGroup, #######################################################################)] [Title(_OverrideShadowColorByTextureGroup, If you dont like the shadow color result from the above section)] [Title(_OverrideShadowColorByTextureGroup, you can optionally override final shadow color by a texture in this section)] [Title(_OverrideShadowColorByTextureGroup, #######################################################################)] [Title(_OverrideShadowColorByTextureGroup, )] [Title(_OverrideShadowColorByTextureGroup, Usage)] [Sub(_OverrideShadowColorByTextureGroup)] _OverrideShadowColorByTexIntensity ("_OverrideShadowColorByTexIntensity (Default 1)", Range(0, 1)) = 1
+		[Title(_OverrideShadowColorByTextureGroup, Define)] [Tex(_OverrideShadowColorByTextureGroup)] [NoScaleOffset] _OverrideShadowColorTex ("_OverrideShadowColorTex (rgb is shadow color, a is mask) (Default white)", 2D) = "white" {}
+		[Sub(_OverrideShadowColorByTextureGroup)] _OverrideShadowColorTexTintColor ("_OverrideShadowColorTexTintColor (Default White)", Vector) = (1,1,1,1)
+		[Sub(_OverrideShadowColorByTextureGroup)] _OverrideShadowColorTexIgnoreAlphaChannel ("_OverrideShadowColorTexIgnoreAlphaChannel (Default 0)", Range(0, 1)) = 0
+		[Main(_RampTextureLightingGroup,_RAMP_LIGHTING)] _UseRampLightingTex ("Ramp Texture (Lighting)                           (Default Off)", Float) = 0
+		[Tex(_RampTextureLightingGroup)] [NoScaleOffset] _RampLightingTex ("_RampLightingTex (only use rgb channel) (Default white)", 2D) = "white" {}
+		[Sub(_RampTextureLightingGroup)] _RampLightingTexSampleUvY ("_RampLightingTexSampleUvY (Default 0.5)", Range(0, 1)) = 0.5
+		[Title(_RampTextureLightingGroup, Override _RampLightingTexSampleUvY by a texture)] [Title(_RampTextureLightingGroup, useful if vertically packed different ramp tex into a single ramp tex atla)] [SubToggle(_RampTextureLightingGroup,_RAMP_LIGHTING_SAMPLE_UVY_TEX)] _UseRampLightingSampleUvYTex ("_UseRampLightingSampleUvYTex (Default Off)", Float) = 0
+		[Tex(_RampTextureLightingGroup)] [NoScaleOffset] _RampLightingSampleUvYTex ("_RampLightingSampleUvYTex (Use G channel) (Default Gray)", 2D) = "Gray" {}
+		[Main(_RampTextureSpecularGroup,_RAMP_SPECULAR)] _UseRampSpecularTex ("Ramp Texture (Specular)                         (Default Off) (Experimental)", Float) = 0
+		[Tex(_RampTextureSpecularGroup)] [NoScaleOffset] _RampSpecularTex ("_RampSpecularTex (only use rgb channel) (Default white)", 2D) = "white" {}
+		[Sub(_RampTextureSpecularGroup)] _RampSpecularTexSampleUvY ("_RampSpecularTexSampleUvY (Default 0.5)", Range(0, 1)) = 0.5
+		[Sub(_RampTextureSpecularGroup)] _RampSpecularWhitePoint ("_RampSpecularWhitePoint (Default 0.5)", Range(0.01, 1)) = 0.5
+		[Title(_RampTextureSpecularGroup, Override _RampSpecularTexSampleUvY by a texture)] [Title(_RampTextureSpecularGroup, useful if vertically packed different ramp tex into a single ramp tex atla)] [SubToggle(_RampTextureSpecularGroup,_RAMP_SPECULAR_SAMPLE_UVY_TEX)] _UseRampSpecularSampleUvYTex ("_UseRampSpecularSampleUvYTex (Default Off)", Float) = 0
+		[Tex(_RampTextureSpecularGroup)] [NoScaleOffset] _RampSpecularSampleUvYTex ("_RampSpecularSampleUvYTex (Use G channel) (Default Gray)", 2D) = "Gray" {}
+		[Main(_DepthTextureRimLightAndShadowGroup,_,2)] _DepthTextureRimLightAndShadowGroup ("Depth Texture Rim Light and Shadow", Float) = 0
+		[Title(_DepthTextureRimLightAndShadowGroup, Rim Light and Shadow Width)] [Sub(_DepthTextureRimLightAndShadowGroup)] _DepthTexRimLightAndShadowWidthMultiplier ("_DepthTexRimLightAndShadowWidthMultiplier (Default 1)", Range(0, 4)) = 1
+		[Title(_DepthTextureRimLightAndShadowGroup, optional Rim Light and Shadow Width controlled by Vertex Color)] [SubToggle(_DepthTextureRimLightAndShadowGroup,_)] _UseDepthTexRimLightAndShadowWidthMultiplierFromVertexColor ("_UseDepthTexRimLightAndShadowWidthMultiplierFromVertexColor (Default Off)", Float) = 0
+		[RGBAChannelMaskToVec4(_DepthTextureRimLightAndShadowGroup)] _DepthTexRimLightAndShadowWidthMultiplierFromVertexColorChannelMask ("_DepthTexRimLightAndShadowWidthMultiplierFromVertexColorChannelMask (Default G)", Vector) = (0,1,0,0)
+		[Title(_DepthTextureRimLightAndShadowGroup, optional Rim Light and Shadow Width controlled by Texture)] [SubToggle(_DepthTextureRimLightAndShadowGroup,_DEPTHTEX_RIMLIGHT_SHADOW_WIDTHMAP)] _UseDepthTexRimLightAndShadowWidthTex ("_UseDepthTexRimLightAndShadowWidthTex (Default Off)", Float) = 0
+		[Tex(_DepthTextureRimLightAndShadowGroup)] [NoScaleOffset] _DepthTexRimLightAndShadowWidthTex ("_DepthTexRimLightAndShadowWidthTex (white is 100% width, darker is reduce width) (Default white)", 2D) = "white" {}
+		[RGBAChannelMaskToVec4(_DepthTextureRimLightAndShadowGroup)] _DepthTexRimLightAndShadowWidthTexChannelMask ("_DepthTexRimLightAndShadowWidthTexChannelMask (Default G)", Vector) = (0,1,0,0)
+		[Title(_DepthTextureRimLightAndShadowGroup, Rim Light Color)] [Sub(_DepthTextureRimLightAndShadowGroup)] _DepthTexRimLightUsage ("_DepthTexRimLightUsage (Default 1)", Range(0, 1)) = 1
+		[Sub(_DepthTextureRimLightAndShadowGroup)] [HDR] _DepthTexRimLightTintColor ("_DepthTexRimLightTintColor (Default White)", Vector) = (1,1,1,1)
+		[Title(_DepthTextureRimLightAndShadowGroup, Rim Light Area Param)] [Sub(_DepthTextureRimLightAndShadowGroup)] _DepthTexRimLightThresholdOffset ("_DepthTexRimLightThresholdOffset (Default 0)", Range(-1, 1)) = 0
+		[Sub(_DepthTextureRimLightAndShadowGroup)] _DepthTexRimLightFadeoutRange ("_DepthTexRimLightFadeoutRange (Default 1)", Range(0.01, 10)) = 1
+		[Title(_DepthTextureRimLightAndShadowGroup, Shadow Color)] [Sub(_DepthTextureRimLightAndShadowGroup)] _DepthTexShadowUsage ("_DepthTexShadowUsage (Default 1)", Range(0, 1)) = 1
+		[Sub(_DepthTextureRimLightAndShadowGroup)] [HDR] _DepthTexShadowTintColor ("_DepthTexShadowTintColor (Default White)", Vector) = (1,1,1,1)
+		[Title(_DepthTextureRimLightAndShadowGroup, Shadow Area Param)] [Sub(_DepthTextureRimLightAndShadowGroup)] _DepthTexShadowThresholdOffset ("_DepthTexShadowThresholdOffset (Default 0)", Range(-1, 1)) = 0
+		[Sub(_DepthTextureRimLightAndShadowGroup)] _DepthTexShadowFadeoutRange ("_DepthTexShadowFadeoutRange (Default 1)", Range(0.01, 10)) = 1
+		[Main(_NiloToonSelfShadowMappingSettingGroup,_)] _EnableNiloToonSelfShadowMapping ("Can Receive NiloToon Shadow?          (Default On)", Float) = 1
+		[Title(_NiloToonSelfShadowMappingSettingGroup, #######################################################################)] [Title(_NiloToonSelfShadowMappingSettingGroup, You can also optionally control shadow intensity by a texture in Intensity by texture section)] [Title(_NiloToonSelfShadowMappingSettingGroup, For example reduce hair shadow intensity on eye white)] [Title(_NiloToonSelfShadowMappingSettingGroup, #######################################################################)] [Title(_NiloToonSelfShadowMappingSettingGroup, )] [Title(_NiloToonSelfShadowMappingSettingGroup, Intensity)] [Sub(_NiloToonSelfShadowMappingSettingGroup)] _NiloToonSelfShadowIntensityForNonFace ("_NiloToonSelfShadowIntensityForNonFace(Default 1)", Range(0, 1)) = 1
+		[Sub(_NiloToonSelfShadowMappingSettingGroup)] _NiloToonSelfShadowIntensityForFace ("_NiloToonSelfShadowIntensityForFace(Default 0)", Range(0, 1)) = 0
+		[Title(_NiloToonSelfShadowMappingSettingGroup, Intensity by texture)] [SubToggle(_NiloToonSelfShadowMappingSettingGroup,_NILOTOON_SELFSHADOW_INTENSITY_MAP)] _UseNiloToonSelfShadowIntensityMultiplierTex ("_UseNiloToonSelfShadowIntensityMultiplierTex (Default Off)", Float) = 0
+		[Tex(_NiloToonSelfShadowMappingSettingGroup)] [NoScaleOffset] _NiloToonSelfShadowIntensityMultiplierTex ("_NiloToonSelfShadowIntensityMultiplierTex (white is 100% intensity, darker is reduce intensity) (Default white)", 2D) = "white" {}
+		[Title(_NiloToonSelfShadowMappingSettingGroup, Bias)] [Sub(_NiloToonSelfShadowMappingSettingGroup)] _NiloToonSelfShadowMappingDepthBias ("_NiloToonSelfShadowMappingDepthBias(Default 0)", Range(-1, 1)) = 0
+		[Main(_RECEIVE_URP_SHADOW,_RECEIVE_URP_SHADOW)] _ReceiveURPShadowMapping ("Can Receive URP Shadow?                      (Default On)", Float) = 1
+		[Title(_RECEIVE_URP_SHADOW, Usage)] [Sub(_RECEIVE_URP_SHADOW)] _ReceiveURPShadowMappingAmount ("_ReceiveURPShadowMappingAmount (Default 1)", Range(0, 1)) = 1
+		[Sub(_RECEIVE_URP_SHADOW)] [HDR] _URPShadowMappingTintColor ("_URPShadowMappingTintColor (Default White)", Vector) = (1,1,1,1)
+		[Title(_RECEIVE_URP_SHADOW, Depth Bias     #increase to hide ugly shadow artifact if needed#)] [Sub(_RECEIVE_URP_SHADOW)] _ReceiveSelfShadowMappingPosOffset ("_ReceiveShadowMappingPosOffset (a.k.a depth bias) (Default 0)", Range(0, 1)) = 0
+		[Sub(_RECEIVE_URP_SHADOW)] _ReceiveSelfShadowMappingPosOffsetForFaceArea ("_ReceiveSelfShadowMappingPosOffsetForFaceArea (a.k.a depth bias) (Default 0.2)", Range(0, 1)) = 0.2
+		[Main(_RENDER_OUTLINE,_)] _RenderOutline ("Traditional Outline                                        (Default On)", Float) = 1
+		[Title(_RENDER_OUTLINE, Smooth outline Mode)] [SubToggle(_RENDER_OUTLINE,_)] _OutlineUseBakedSmoothNormal ("_OutlineUseBakedSmoothNormal (require having NiloToon's asset label to model asset) (Default On)", Float) = 1
+		[SubToggle(_RENDER_OUTLINE,_)] _UnityCameraDepthTextureWriteOutlineExtrudedPosition ("_UnityCameraDepthTextureWriteOutlineExtrudedPosition (Turn it off if you are having 2D rim light white line artifact) (Default On)", Float) = 1
+		[Title(_RENDER_OUTLINE, Color)] [Sub(_RENDER_OUTLINE)] [HDR] _OutlineTintColor ("_OutlineTintColor (Default linear 0.25)", Vector) = (0.25,0.25,0.25,1)
+		[Sub(_RENDER_OUTLINE)] [HDR] _OutlineOcclusionAreaTintColor ("_OutlineOcclusionAreaTintColor (Default white)", Vector) = (1,1,1,1)
+		[Title(_RENDER_OUTLINE, Replace Color)] [Sub(_RENDER_OUTLINE)] _OutlineUseReplaceColor ("_OutlineUseReplaceColor (Default 0)", Range(0, 1)) = 0
+		[Sub(_RENDER_OUTLINE)] [HDR] _OutlineReplaceColor ("_OutlineReplaceColor (Default white)", Vector) = (1,1,1,1)
+		[Title(_RENDER_OUTLINE,Outline Width)] [Sub(_RENDER_OUTLINE)] _OutlineWidth ("_OutlineWidth (Default 1)", Range(0, 32)) = 1
+		[Sub(_RENDER_OUTLINE)] _OutlineWidthExtraMultiplier ("_OutlineWidthExtraMultiplier (Default 1)", Range(0, 256)) = 1
+		[Title(_RENDER_OUTLINE,optional Outline Width controlled by Vertex Color)] [SubToggle(_RENDER_OUTLINE,_)] _UseOutlineWidthMaskFromVertexColor ("_UseOutlineWidthMaskFromVertexColor (Default Off)", Float) = 0
+		[RGBAChannelMaskToVec4(_RENDER_OUTLINE)] _OutlineWidthMaskFromVertexColor ("_OutlineWidthMaskFromVertexColor (Default G)", Vector) = (0,1,0,0)
+		[Title(_RENDER_OUTLINE,optional Outline Width controlled by Texture)] [SubToggle(_RENDER_OUTLINE,_OUTLINEWIDTHMAP)] _UseOutlineWidthTex ("_UseOutlineWidthTex (Default Off)", Float) = 0
+		[Tex(_RENDER_OUTLINE)] [NoScaleOffset] _OutlineWidthTex ("_OutlineWidthTex (white is 100% width, darker is reduce width) (Default white)", 2D) = "white" {}
+		[RGBAChannelMaskToVec4(_RENDER_OUTLINE)] _OutlineWidthTexChannelMask ("_OutlineWidthTexChannelMask (Default G)", Vector) = (0,1,0,0)
+		[Title(_RENDER_OUTLINE,Outline Z Offset for hiding ugly outline)] [Sub(_RENDER_OUTLINE)] _OutlineZOffset ("_OutlineZOffset (View Space unit push away) (Default 0.0001)", Range(0, 1)) = 0.0001
+		[Sub(_RENDER_OUTLINE)] _OutlineZOffsetForFaceArea ("_OutlineZOffsetForFaceArea (View Space unit push away) (Default 0.02)", Range(0, 1)) = 0.02
+		[Title(_RENDER_OUTLINE,optional Outline Z Offset controlled by Texture)] [SubToggle(_RENDER_OUTLINE,_OUTLINEZOFFSETMAP)] _UseOutlineZOffsetTex ("_UseOutlineZOffsetTex (Default Off)", Float) = 0
+		[Tex(_RENDER_OUTLINE)] [NoScaleOffset] _OutlineZOffsetMaskTex ("_OutlineZOffsetMask (black is apply 100% ZOffset, white is 0%) (Default Black)", 2D) = "black" {}
+		[MinMaxSlider(_RENDER_OUTLINE,_OutlineZOffsetMaskRemapStart,_OutlineZOffsetMaskRemapEnd)] _OutlineZOffsetMaskRemapMinMaxSlider ("Range remap (Default 0~1)", Range(0, 1)) = 1
+		[HideInInspector] _OutlineZOffsetMaskRemapStart ("_OutlineZOffsetMaskRemapStart", Range(0, 1)) = 0
+		[HideInInspector] _OutlineZOffsetMaskRemapEnd ("_OutlineZOffsetMaskRemapEnd", Range(0, 1)) = 1
+		[Main(_SCREENSPACE_OUTLINE,_SCREENSPACE_OUTLINE)] _RenderScreenSpaceOutline ("Screen Space Outline                                  (Default Off) (Experimental)", Float) = 0
+		[Title(_SCREENSPACE_OUTLINE, You need to enable AllowRenderScreenSpaceOutline in NiloToonAllInOneRendererFeature)] [Title(_SCREENSPACE_OUTLINE, #######################################################################)] [Title(_SCREENSPACE_OUTLINE,Outline Width)] [Sub(_SCREENSPACE_OUTLINE)] _ScreenSpaceOutlineWidth ("_ScreenSpaceOutlineWidth (Default 1)", Range(0, 10)) = 1
+		[Sub(_SCREENSPACE_OUTLINE)] _ScreenSpaceOutlineWidthIfFace ("_ScreenSpaceOutlineWidthIfFace (Default 0)", Range(0, 10)) = 0
+		[Title(_SCREENSPACE_OUTLINE,Outline Depth Sensitivity)] [Sub(_SCREENSPACE_OUTLINE)] _ScreenSpaceOutlineDepthSensitivity ("_ScreenSpaceOutlineDepthSensitivity (Default 1)", Range(0, 10)) = 1
+		[Sub(_SCREENSPACE_OUTLINE)] _ScreenSpaceOutlineDepthSensitivityIfFace ("_ScreenSpaceOutlineDepthSensitivityIfFace (Default 1)", Range(0, 10)) = 1
+		[Title(_SCREENSPACE_OUTLINE,Outline Depth Sensitivity Multiplier Texture)] [Tex(_SCREENSPACE_OUTLINE)] [NoScaleOffset] _ScreenSpaceOutlineDepthSensitivityTex ("_ScreenSpaceOutlineDepthSensitivityTex(Default White)", 2D) = "white" {}
+		[RGBAChannelMaskToVec4(_SCREENSPACE_OUTLINE)] _ScreenSpaceOutlineDepthSensitivityTexChannelMask ("_ScreenSpaceOutlineDepthSensitivityTexChannelMask (Default G)", Vector) = (0,1,0,0)
+		[MinMaxSlider(_SCREENSPACE_OUTLINE,_ScreenSpaceOutlineDepthSensitivityTexRemapStart,_ScreenSpaceOutlineDepthSensitivityTexRemapEnd)] _ScreenSpaceOutlineDepthSensitivityTexRemapMinMaxSlider ("Range remap (Default 0~1)", Range(0, 1)) = 1
+		[HideInInspector] _ScreenSpaceOutlineDepthSensitivityTexRemapStart ("_ScreenSpaceOutlineDepthSensitivityTexRemapStart", Range(0, 1)) = 0
+		[HideInInspector] _ScreenSpaceOutlineDepthSensitivityTexRemapEnd ("_ScreenSpaceOutlineDepthSensitivityTexRemapEnd", Range(0, 1)) = 1
+		[Title(_SCREENSPACE_OUTLINE,Outline Normals Sensitivity)] [Sub(_SCREENSPACE_OUTLINE)] _ScreenSpaceOutlineNormalsSensitivity ("_ScreenSpaceOutlineNormalsSensitivity (Default 1)", Range(0, 10)) = 1
+		[Sub(_SCREENSPACE_OUTLINE)] _ScreenSpaceOutlineNormalsSensitivityIfFace ("_ScreenSpaceOutlineNormalsSensitivityIfFace (Default 1)", Range(0, 10)) = 1
+		[Title(_SCREENSPACE_OUTLINE,Outline Normals Sensitivity Multiplier Texture)] [Tex(_SCREENSPACE_OUTLINE)] [NoScaleOffset] _ScreenSpaceOutlineNormalsSensitivityTex ("_ScreenSpaceOutlineNormalsSensitivityTex(Default White)", 2D) = "white" {}
+		[RGBAChannelMaskToVec4(_SCREENSPACE_OUTLINE)] _ScreenSpaceOutlineNormalsSensitivityTexChannelMask ("_ScreenSpaceOutlineNormalsSensitivityTexChannelMask (Default G)", Vector) = (0,1,0,0)
+		[MinMaxSlider(_SCREENSPACE_OUTLINE,_ScreenSpaceOutlineNormalsSensitivityTexRemapStart,_ScreenSpaceOutlineNormalsSensitivityTexRemapEnd)] _ScreenSpaceOutlineNormalsSensitivityTexRemapMinMaxSlider ("Range remap (Default 0~1)", Range(0, 1)) = 1
+		[HideInInspector] _ScreenSpaceOutlineNormalsSensitivityTexRemapStart ("_ScreenSpaceOutlineNormalsSensitivityTexRemapStart", Range(0, 1)) = 0
+		[HideInInspector] _ScreenSpaceOutlineNormalsSensitivityTexRemapEnd ("_ScreenSpaceOutlineNormalsSensitivityTexRemapEnd", Range(0, 1)) = 1
+		[Title(_SCREENSPACE_OUTLINE,Outline Color)] [Sub(_SCREENSPACE_OUTLINE)] [HDR] _ScreenSpaceOutlineTintColor ("_ScreenSpaceOutlineTintColor (Default linear 0.1)", Vector) = (0.1,0.1,0.1,1)
+		[Sub(_SCREENSPACE_OUTLINE)] [HDR] _ScreenSpaceOutlineOcclusionAreaTintColor ("_ScreenSpaceOutlineOcclusionAreaTintColor (Default white)", Vector) = (1,1,1,1)
+		[Title(_SCREENSPACE_OUTLINE,Replace Final Outline Color)] [Sub(_SCREENSPACE_OUTLINE)] _ScreenSpaceOutlineUseReplaceColor ("_ScreenSpaceOutlineUseReplaceColor (Default 0)", Range(0, 1)) = 0
+		[Sub(_SCREENSPACE_OUTLINE)] [HDR] _ScreenSpaceOutlineReplaceColor ("_ScreenSpaceOutlineReplaceColor (Default white)", Vector) = (1,1,1,1)
+		[Main(_OverrideOutlineColorByTextureGroup,_OVERRIDE_OUTLINECOLOR_BY_TEXTURE)] _UseOverrideOutlineColorByTexture ("Override Outline Color by Texture      (Default Off)", Float) = 0
+		[Title(_OverrideOutlineColorByTextureGroup, #######################################################################)] [Title(_OverrideOutlineColorByTextureGroup, If you dont like the outline color result from the above sections)] [Title(_OverrideOutlineColorByTextureGroup, you can optionally override final outline color by a texture using this section)] [Title(_OverrideOutlineColorByTextureGroup, #######################################################################)] [Title(_OverrideOutlineColorByTextureGroup, )] [Title(_OverrideOutlineColorByTextureGroup,Usage)] [Sub(_OverrideOutlineColorByTextureGroup)] _OverrideOutlineColorByTexIntensity ("_OverrideOutlineColorByTexIntensity (Default 1)", Range(0, 1)) = 1
+		[Title(_OverrideOutlineColorByTextureGroup,Define)] [Tex(_OverrideOutlineColorByTextureGroup)] [NoScaleOffset] _OverrideOutlineColorTex ("_OverrideOutlineColorTex (rgb is outline color, a is mask) (Default white)", 2D) = "white" {}
+		[Sub(_OverrideOutlineColorByTextureGroup)] _OverrideOutlineColorTexTintColor ("_OverrideOutlineColorTexTintColor (Default White)", Vector) = (1,1,1,1)
+		[Sub(_OverrideOutlineColorByTextureGroup)] _OverrideOutlineColorTexIgnoreAlphaChannel ("_OverrideOutlineColorTexIgnoreAlphaChannel (Default 0)", Range(0, 1)) = 0
+		[Main(_AllowNiloToonBloomCharacterAreaOverrideGroup,_)] _AllowNiloToonBloomCharacterAreaOverride ("Allow NiloToonBloom Override?          (Default On) (Experimental)                            ", Float) = 1
+		[Title(_AllowNiloToonBloomCharacterAreaOverrideGroup, #######################################################################)] [Title(_AllowNiloToonBloomCharacterAreaOverrideGroup, When using NiloToonBloomVolume you can control character area override per material)] [Title(_AllowNiloToonBloomCharacterAreaOverrideGroup, #######################################################################)] [Title(_AllowNiloToonBloomCharacterAreaOverrideGroup, )] [Sub(_AllowNiloToonBloomCharacterAreaOverrideGroup)] _AllowedNiloToonBloomOverrideStrength ("_AllowedNiloToonBloomOverrideStrength", Range(0, 1)) = 1
+		[Main(_ClothDynamicsGroup,_NILOTOON_SUPPORT_CLOTHDYNAMICS)] _SupportClothDynamics ("Support 'Cloth Dynamics' asset            (Default Off)", Float) = 0
+		[HideInInspector] _AverageShadowMapRTSampleIndex ("_AverageShadowMapRTSampleIndex", Float) = -1
+		[HideInInspector] _PerCharEffectTintColor ("_PerCharEffectTintColor", Vector) = (1,1,1,1)
+		[HideInInspector] _PerCharEffectAddColor ("_PerCharEffectAddColor", Vector) = (0,0,0,1)
+		[HideInInspector] _PerCharEffectDesaturatePercentage ("_PerCharEffectDesaturatePercentage", Range(0, 1)) = 0
+		[HideInInspector] _PerCharEffectLerpColor ("_PerCharEffectLerpColor", Vector) = (1,1,0,0)
+		[HideInInspector] _PerCharEffectRimColor ("_PerCharEffectRimColor", Vector) = (0,0,0,1)
+		[HideInInspector] _PerCharacterOutlineColorLerp ("_PerCharacterOutlineColorLerp", Vector) = (1,1,1,0)
+		[HideInInspector] _PerCharacterBaseColorTint ("_PerCharacterBaseColorTint", Vector) = (1,1,1,1)
+		[HideInInspector] _PerCharacterOutlineWidthMultiply ("_PerCharacterOutlineWidthMultiply", Float) = 1
+		[HideInInspector] _PerCharacterOutlineColorTint ("_PerCharacterOutlineColorTint", Vector) = (1,1,1,1)
+		[HideInInspector] _ExtraThickOutlineWidth ("_ExtraThickOutlineWidth", Range(0, 100)) = 4
+		[HideInInspector] _ExtraThickOutlineViewSpacePosOffset ("_ExtraThickOutlineViewSpacePosOffset", Vector) = (0,0,0,1)
+		[HideInInspector] _ExtraThickOutlineColor ("_ExtraThickOutlineColor", Vector) = (1,1,1,1)
+		[HideInInspector] _ExtraThickOutlineZOffset ("_ExtraThickOutlineZOffset", Float) = -0.1
+		[HideInInspector] _ExtraThickOutlineMaxFinalWidth ("_ExtraThickOutlineMaxFinalWidth", Float) = 100
+		[HideInInspector] _FaceForwardDirection ("_FaceForwardDirection", Vector) = (0,0,1,1)
+		[HideInInspector] _FaceUpDirection ("_FaceUpDirection", Vector) = (0,1,0,1)
+		[HideInInspector] _FixFaceNormalAmount ("_FixFaceNormalAmount", Range(0, 1)) = 1
+		[HideInInspector] _CharacterBoundCenterPosWS ("_CharacterBoundCenterPosWS", Vector) = (0,0,0,1)
+		[HideInInspector] _NiloToonEnableDepthTextureRimLightAndShadow ("_NiloToonEnableDepthTextureRimLightAndShadow", Float) = 0
+		[HideInInspector] _DitherFadeoutAmount ("_DitherFadeoutAmount", Range(0, 1)) = 0
+		[HideInInspector] _PerspectiveRemovalAmount ("_PerspectiveRemovalAmount", Range(0, 1)) = 0
+		[HideInInspector] _PerspectiveRemovalRadius ("_PerspectiveRemovalRadius", Float) = 1
+		[HideInInspector] _HeadBonePositionWS ("_HeadBonePositionWS", Vector) = (0,0,0,1)
+		[HideInInspector] _PerspectiveRemovalStartHeight ("_PerspectiveRemovalStartHeight", Float) = 0
+		[HideInInspector] _PerspectiveRemovalEndHeight ("_PerspectiveRemovalEndHeight", Float) = 1
+	}
+	
+	//DummyShaderTextExporter - One Sided
+	SubShader{
+		Tags { "RenderType" = "Opaque" }
+		LOD 200
+		CGPROGRAM
+#pragma surface surf Standard fullforwardshadows
+#pragma target 3.0
+		sampler2D _MainTex;
+		struct Input
+		{
+			float2 uv_MainTex;
+		};
+		void surf(Input IN, inout SurfaceOutputStandard o)
+		{
+			fixed4 c = tex2D(_MainTex, IN.uv_MainTex);
+			o.Albedo = c.rgb;
+		}
+		ENDCG
+	}
+	Fallback "Hidden/Universal Render Pipeline/FallbackError"
+	//CustomEditor "JTRP.ShaderDrawer.LWGUI"
+}
