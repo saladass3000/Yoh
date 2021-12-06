@@ -108,6 +108,8 @@
     <Compile Include="Assets\MobileDepthWater\Scripts\Water\WaterArea.cs" />
     <Compile Include="Assets\MobileDepthWater\Scripts\Water\WaterMaterialSwitcher.cs" />
     <Compile Include="Assets\MobileDepthWater\Scripts\Water\WaterPropertyBlockSetter.cs" />
+    <Compile Include="Assets\Script\HealthManager.cs" />
+    <Compile Include="Assets\Script\HurtPlayer.cs" />
     <Compile Include="Assets\Script\PlayerController.cs" />
     <Compile Include="Assets\Stylized Water For URP\Demos\Buoyancy\BuoyantObject.cs" />
     <Compile Include="Assets\Stylized Water For URP\Demos\Buoyancy\GerstnerWaveDisplacement.cs" />

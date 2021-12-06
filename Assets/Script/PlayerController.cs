@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     public static PlayerController instance;
 
     public float moveSpeed;
+    private float fixedspeed;
     public float jumpForce;
     public float gravityScale = 5f;
     //public Joystick joystick;
@@ -19,6 +20,10 @@ public class PlayerController : MonoBehaviour
     public float rotateSpeed = 5f;
 
     public Animator anim;
+
+    public bool isAttacking;
+    private float attackCounter;
+    public float Attacktimmer;
 
     public bool isKnocking;
     public float knockbackLength = .5f;
@@ -35,6 +40,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         cam = Camera.main;
+        fixedspeed = moveSpeed;
     }
 
     // Update is called once per frame
@@ -44,10 +50,10 @@ public class PlayerController : MonoBehaviour
         {
             float yStore = moveDirection.y;
             //moveDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
-            moveDirection = (transform.forward * Input.GetAxisRaw("Vertical")) + (transform.right * Input.GetAxisRaw("Horizontal"));
+            moveDirection = (transform.right * Input.GetAxisRaw("Horizontal"));
            // moveDirection = (transform.forward * joystick.Vertical) + (transform.right * joystick.Horizontal);
             moveDirection.Normalize();
-            moveDirection = moveDirection * moveSpeed;
+            moveDirection = moveDirection * fixedspeed;
             moveDirection.y = yStore;
 
             if (charCont.isGrounded)
@@ -57,6 +63,10 @@ public class PlayerController : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
                     moveDirection.y = jumpForce;
+                }
+                if (Input.GetKeyDown(KeyCode.J))
+                {
+                    StartCoroutine("Attackings");
                 }
 
             }
@@ -73,6 +83,7 @@ public class PlayerController : MonoBehaviour
                 Quaternion newRotation = Quaternion.LookRotation(new Vector3(moveDirection.x, 0f, moveDirection.z));
                 // playerModel.transform.rotation = newRotation;
                 playerModel.transform.rotation = Quaternion.Slerp(playerModel.transform.rotation, newRotation, rotateSpeed * Time.deltaTime);
+
             }
         }
         if (isKnocking)
@@ -108,5 +119,16 @@ public class PlayerController : MonoBehaviour
         knockbackCounter = knockbackLength;
         moveDirection.y = knockbackPower.y;
         charCont.Move(moveDirection * Time.deltaTime);
+    }
+    public void stopAttacking()
+    {
+        fixedspeed = moveSpeed;
+    }
+    IEnumerator Attackings()
+    {
+        anim.SetTrigger("Attacking");
+        fixedspeed = 0.1f;
+        yield return new WaitForSeconds(0.5f);
+        fixedspeed = moveSpeed;
     }
 }
