@@ -109,12 +109,15 @@
     <Compile Include="Assets\MobileDepthWater\Scripts\Water\WaterMaterialSwitcher.cs" />
     <Compile Include="Assets\MobileDepthWater\Scripts\Water\WaterPropertyBlockSetter.cs" />
     <Compile Include="Assets\Script\PlayerController.cs" />
+    <Compile Include="Assets\Stylized Water For URP\Demos\Buoyancy\BuoyantObject.cs" />
+    <Compile Include="Assets\Stylized Water For URP\Demos\Buoyancy\GerstnerWaveDisplacement.cs" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiMatcap.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiFrag.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiMath.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiGrab.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiFlipbook.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiBlackLight.cginc" />
+    <None Include="Assets\Stylized Water For URP\Shaders\Libraries\WaterFoam.hlsl" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiSubsurfaceScattering.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_Poicludes.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiPanosphere.cginc" />
@@ -124,10 +127,12 @@
     <None Include="Assets\UnityURPToonLitShaderExample-master\more shader\CustomScrolling Ticker.shader" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiMacros.cginc" />
     <None Include="Assets\_PoiyomiShaders\Scripts\poi-tools\Resources\PoiTexturePacker.shader" />
+    <None Include="Assets\Stylized Water For URP\Scripts\UI\Acknowledgements.uxml" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiPassShadow.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Shaders\S_Poiyomi_Toon.shader" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiEnvironmentalRimLighting.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_Poicludes.cginc" />
+    <None Include="Assets\Stylized Water For URP\Scripts\UI\Find Errors.uss" />
     <None Include="Assets\_PoiyomiShaders\poiToonPresets.txt" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiPass.cginc" />
     <None Include="Assets\UnityURPToonLitShaderExample-master\more shader\CustomTree Leaf.shader" />
@@ -150,6 +155,7 @@
     <None Include="Assets\UnityURPToonLitShaderExample-master\more shader\Universal Render PipelineNiloToonNiloToon_Character Sticker(Multiply).shader" />
     <None Include="Assets\UnityURPToonLitShaderExample-master\more shader\CustomUntextured Emmisive Surface.shader" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiTessellation.cginc" />
+    <None Include="Assets\Comic\Dialog_comic_level_1.txt" />
     <None Include="Assets\_PoiyomiShaders\Scripts\poi-tools\Resources\PoiTextureUnpacker.shader" />
     <None Include="Assets\csc.rsp" />
     <None Include="Assets\UnityURPToonLitShaderExample-master\NiloZOffset.hlsl" />
@@ -171,12 +177,15 @@
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiBRDF.cginc" />
     <None Include="Assets\Character Movement Fundamentals\README.txt" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiShadowVert.cginc" />
+    <None Include="Assets\Stylized Water For URP\Scripts\UI\About.uxml" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiWireframe.cginc" />
+    <None Include="Assets\Stylized Water For URP\Scripts\UI\Support.uxml" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiShadowVert.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiGlitter.cginc" />
     <None Include="Assets\UnityURPToonLitShaderExample-master\more shader\CustomLight Beam.shader" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\Notes.txt" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiEnvironmentalRimLighting.cginc" />
+    <None Include="Assets\Comic\Dialog_Level_2.txt" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiDecal.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiShadowFrag.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiDecal.cginc" />
@@ -189,10 +198,13 @@
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiDithering.cginc" />
     <None Include="Assets\UnityURPToonLitShaderExample-master\more shader\Universal Render PipelineNatureSpeedTree8.shader" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiRNG.cginc" />
+    <None Include="Assets\Stylized Water For URP\Shaders\Libraries\WaterCaustics.hlsl" />
     <None Include="Assets\UnityURPToonLitShaderExample-master\more shader\Universal Render PipelineParticlesLit.shader" />
+    <None Include="Assets\Stylized Water For URP\Shaders\Libraries\WaterLighting.hlsl" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiParallax.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiBulge.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\Notes.txt" />
+    <None Include="Assets\Stylized Water For URP\Scripts\UI\Find Errors.uxml" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiAlphaToCoverage.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiPanosphere.cginc" />
     <None Include="Assets\UnityURPToonLitShaderExample-master\more shader\UnlitMask unlit shader for TV.shader" />
@@ -208,22 +220,27 @@
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiShadowIncludes.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiMath.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiRimLighting.cginc" />
+    <None Include="Assets\Stylized Water For URP\Scripts\UI\About.uss" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiRimLighting.cginc" />
     <None Include="Assets\UnityURPToonLitShaderExample-master\more shader\Universal Render PipelineNiloToonNiloToon_Environment.shader" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiDefines.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiSubsurfaceScattering.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiVert.cginc" />
     <None Include="Assets\UnityURPToonLitShaderExample-master\more shader\Universal Render PipelineUnlit.shader" />
+    <None Include="Assets\Stylized Water For URP\Shaders\Libraries\Caustics\Caustics.shader" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiMSDF.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiBlackLight.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiEmission.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiSpawnInFrag.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiClearCoat.cginc" />
+    <None Include="Assets\Stylized Water For URP\Scripts\UI\Toolbar.uss" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiAlphaToCoverage.cginc" />
     <None Include="Assets\Character Movement Fundamentals\Source\Misc\Fonts\LICENSE.txt" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiUVDistortion.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Shaders\7PlusLabels.txt" />
+    <None Include="Assets\Stylized Water For URP\Shaders\Libraries\WaterColor.hlsl" />
     <None Include="Assets\_PoiyomiShaders\Shaders\PoiLabels.txt" />
+    <None Include="Assets\Stylized Water For URP\Shaders\Libraries\StylizedWaterForURP.hlsl" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiRGBMask.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiGlitter.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiMirror.cginc" />
@@ -241,6 +258,7 @@
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiIridescence.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiSpecular.cginc" />
     <None Include="Assets\Character Movement Fundamentals\Source\Misc\Fonts\Attribution.txt" />
+    <None Include="Assets\Stylized Water For URP\Shaders\Libraries\WaterWaves.hlsl" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiOutlineFrag.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiBlending.cginc" />
     <None Include="Assets\UnityURPToonLitShaderExample-master\more shader\DemoNiloToonProcedualColorUnlitSkybox.shader" />
@@ -258,11 +276,14 @@
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiSpawnInFrag.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiDefines.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiHologram.cginc" />
+    <None Include="Assets\Comic\Dialog_Level_3.txt" />
     <None Include="Assets\UnityURPToonLitShaderExample-master\more shader\CustomBack Screen.shader" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiWireframe.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiOutlineFrag.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiShadowIncludes.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Extras\MasterScanner.shader" />
+    <None Include="Assets\Stylized Water For URP\Scripts\UI\Support.uss" />
+    <None Include="Assets\Stylized Water For URP\Scripts\UI\Toolbar.uxml" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiLighting.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_FunctionsArtistic.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiMacros.cginc" />
@@ -271,6 +292,7 @@
     <None Include="Assets\UnityURPToonLitShaderExample-master\more shader\Universal Render PipelineParticlesUnlit.shader" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiLighting.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiDithering.cginc" />
+    <None Include="Assets\Stylized Water For URP\Scripts\UI\Acknowledgements.uss" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Includes\CGI_PoiPassOutline.cginc" />
     <None Include="Assets\_PoiyomiShaders\Shaders\Pro\Includes\CGI_PoiPassOutline.cginc" />
     <None Include="Assets\UnityURPToonLitShaderExample-master\more shader\Universal Render PipelineNiloToonNiloToon_Character.shader" />
@@ -882,6 +904,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="StylizedWaterForURPEditor.csproj">
+      <Project>{635EB600-1A09-9310-E42A-C6C134A19111}</Project>
+      <Name>StylizedWaterForURPEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="StylizedWaterForURP.csproj">
+      <Project>{1BB7BCBA-3AB4-0E07-A97F-512FF1FE71BA}</Project>
+      <Name>StylizedWaterForURP</Name>
+    </ProjectReference>
     <ProjectReference Include="ThryAssemblyDefinition.csproj">
       <Project>{3280EEFB-9764-37EA-78B8-6C885EC385CD}</Project>
       <Name>ThryAssemblyDefinition</Name>

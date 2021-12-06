@@ -704,6 +704,14 @@
       <Project>{53015B36-F750-6A4F-AB12-31ECCB26484F}</Project>
       <Name>Assembly-CSharp</Name>
     </ProjectReference>
+    <ProjectReference Include="StylizedWaterForURPEditor.csproj">
+      <Project>{635EB600-1A09-9310-E42A-C6C134A19111}</Project>
+      <Name>StylizedWaterForURPEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="StylizedWaterForURP.csproj">
+      <Project>{1BB7BCBA-3AB4-0E07-A97F-512FF1FE71BA}</Project>
+      <Name>StylizedWaterForURP</Name>
+    </ProjectReference>
     <ProjectReference Include="ThryAssemblyDefinition.csproj">
       <Project>{3280EEFB-9764-37EA-78B8-6C885EC385CD}</Project>
       <Name>ThryAssemblyDefinition</Name>
